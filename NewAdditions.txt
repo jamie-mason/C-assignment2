@@ -1,0 +1,3 @@
+*Author Jamie Mason*
+*Created  7:57 pm Sunday, March 17th 2024.*
+Added try-catch to handle any errors the code my throw in any of the MenuOutput class's functions if one were to occur and outputs in which function the error occured.

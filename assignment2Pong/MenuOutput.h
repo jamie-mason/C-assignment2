@@ -1,6 +1,6 @@
 /*
 *AUTHOR Jamie Mason
-Last edit Sunday, March 17th 2024 *
+Last edit Sunday, March 17th 2024 7:57pm*
 */
 
 #pragma once    // Include guard to prevent multiple inclusion of this header file
@@ -19,8 +19,7 @@ private:
 	const std::string title = "PONG";       // Title of the menu
 	std::string* options;                   // Array of menu options
 	const unsigned int size = 3;            // Number of options in the menu (const to prevent modification)
-	unsigned int preTextAst, postTextAst;        // unsigned int holding the number of asterisks that will be printed before and after the title.
-	int numSpaces, numSpacesBeforeOptions;       // Additional parameters for formatting
+	unsigned int preTextAst, postTextAst, numBeforeSpacesEachLine, numSpacesBeforeOptions;    // unsigned int holding the number of asterisks that will be printed before and after the title.
 	void setOptions();
 public:
 		
@@ -41,12 +40,12 @@ public:
 	void printBoxAlignAtRight(std::string*);  // Print text aligned right within a bordered box
 	void printBoxAlignAtCentre(std::string*);  // Print text aligned center within a bordered box
 	void printTitle();                              // Print the menu title
-	int titleLength();                             // Calculate the length of the menu title  
+	unsigned int titleLength();                             // Calculate the length of the menu title  
 	void printAsterisk();                          // Print an asterisk
-	void printAsterisksAtBottom(int,int);                          // Print a line of asterisks  
+	void printAsterisksAtBottom(unsigned int, unsigned int);            // Print a line of asterisks  
 	void printEmptyAsteriskLine();                 // Print a line with an asterisk at each end
-	void printSpaces(int);                         // Print a number of spaces 
-	int printSpacesBeforeOptions(int);             // Print spaces before options and return the total number
+	void printSpaces(unsigned int);                         // Print a number of spaces 
+	unsigned int printSpacesBeforeOptions(int);             // Print spaces before options and return the total number
 	void printOptionLine(std::string, int);          // Method to print an option line within the menu box.
 
 
