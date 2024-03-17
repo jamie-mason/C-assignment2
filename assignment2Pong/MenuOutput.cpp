@@ -1,71 +1,47 @@
-#include "MenuOutput.h"
+/*
+*AUTHOR Jamie Mason
+Last edit Sunday, March 17th 2024 *
+*/
 
+#include "MenuOutput.h"
 MenuOutput::MenuOutput() {
-	title = "";
-	size = 3;
-	options = new std::string[0];
-	preTextAst = 0;
-	postTextAst = 0;
+	preTextAst = 0; // Initialize preTextAst to 0
+	postTextAst = 0; // Initialize postTextAst to 0
+	
+	setOptions();   //calls and runs the setOptions function
+}
+
+void MenuOutput::setOptions() {
+	options = new std::string[size]; // Dynamically allocate memory for options array with size 'size'
+	options[0] = "(1) Start"; // Set the first option to "(1) Start"
+	options[1] = "(2) High Scores"; // Set the second option to "(2) High Scores"
+	options[2] = "(3) Quit "; // Set the third option to "(3) Quit "
 }
 void MenuOutput::clearScreen() {
 #ifdef _WIN32
-	std::system("cls");
+	std::system("cls"); // Clear the console screen on Windows
 #else
 	// Assume Unix-like system
-	std::system("clear");
+	std::system("clear"); // Clear the console screen on Unix-like systems
 #endif
 }
 
-MenuOutput::MenuOutput(std::string title) {
-	this->title = title;
-	size = 3;
-
-	preTextAst = 0;
-	postTextAst = 0;
-
-	options = new std::string[size];
-	options[0] = "(1) Start";
-	options[1] = "(2) High Scores";
-	options[2] = "(3) Quit ";
-
-}
-std::string* MenuOutput::getOptions() {
+std::string* MenuOutput::getOptions() const {
 	return options;
 }
-std::string MenuOutput::getTitle() {
+const std::string MenuOutput::getTitle() const {
 	return title;
 }
-int MenuOutput::getSize() {
+const unsigned int MenuOutput::getSize() const {
 	return size;
-}
-void MenuOutput::printBox(std::string& text) {
-
-	std::string horizontalLine(text.length(), '-');
-
-	std::cout << "+" << horizontalLine << "+\n";
-	std::cout << "|" << text << "|\n";
-	std::cout << "+" << horizontalLine << "+\n";
 }
 
 void MenuOutput::printBoxAlignAtLeft(std::string* textList) {
 	std::string temp;
-	int numOfSpacesUntilEndAsterisk;
 
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		std::string horizontalLine(textList[i].length(), '-');
-		auto printOptionLine = [&](std::string temp, int numSpacesBeforeOptions) {
-			printAsterisk();
-			int numOfSpacesUntilEndAsterisk = titleLength() - temp.length() - 2 - numSpacesBeforeOptions;
-			if (numOfSpacesUntilEndAsterisk < 0) {
-				numSpacesBeforeOptions = numSpacesBeforeOptions - abs(numOfSpacesUntilEndAsterisk);
-				numOfSpacesUntilEndAsterisk = 0;
-			}
-			printSpacesBeforeOptions(numSpacesBeforeOptions);
-			std::cout << temp;
-			printSpaces(numOfSpacesUntilEndAsterisk);
-			std::cout << "*" << std::endl;
 
-			};
 		temp = "+" + horizontalLine + "+";
 		printOptionLine(temp, numSpacesBeforeOptions);
 
@@ -80,54 +56,41 @@ void MenuOutput::printBoxAlignAtRight(std::string* textList) {
 
 	size_t maxLength = findLongestString(textList);
 	std::string leftSpaces, temp;
-	int numOfSpacesUntilEndAsterisk;
 
-	for (int i = 0; i < size; i++) {
+
+	for (unsigned int i = 0; i < size; i++) {
 		std::string horizontalLine(textList[i].length(), '-');
 		if (textList[i].length() < maxLength) {
 			for (size_t j = 0; j < maxLength - textList[i].length(); j++) {
 				leftSpaces = leftSpaces + " ";
 			}
 		}
-		auto printOptionLine = [&](std::string temp, int numSpacesBeforeOptions) {
-			printAsterisk();
-			int numOfSpacesUntilEndAsterisk = titleLength() - temp.length() - 2 - numSpacesBeforeOptions;
-			if (numOfSpacesUntilEndAsterisk < 0) {
-				numSpacesBeforeOptions = numSpacesBeforeOptions - abs(numOfSpacesUntilEndAsterisk);
-				numOfSpacesUntilEndAsterisk = 0;
-			}
-			printSpacesBeforeOptions(numSpacesBeforeOptions);
-			std::cout << temp;
-			printSpaces(numOfSpacesUntilEndAsterisk);
-			std::cout << "*" << std::endl;
 
-		};
-		temp =  leftSpaces + "+" + horizontalLine + "+";
+		temp = leftSpaces + "+" + horizontalLine + "+";
 		printOptionLine(temp, numSpacesBeforeOptions);
 
-		temp =  leftSpaces + "|" + textList[i] + "|";
+		temp = leftSpaces + "|" + textList[i] + "|";
 		printOptionLine(temp, numSpacesBeforeOptions);
 
-		temp =  leftSpaces + "+" + horizontalLine + "+";
+		temp = leftSpaces + "+" + horizontalLine + "+";
 		printOptionLine(temp, numSpacesBeforeOptions);
 
 		leftSpaces = "";
 	}
-	
+
 }
 void MenuOutput::printBoxAlignAtCentre(std::string* textList) {
 
-	size_t maxLength = findLongestString(textList), totalSpaces;
-	std::string spacesLeft, spacesRight,temp;
-	int numOfSpacesUntilEndAsterisk;
+	size_t maxLength = findLongestString(textList), totalSpaces ,leftPadding, rightPadding;
+	std::string spacesLeft, spacesRight, temp;
 
-
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		std::string horizontalLine(textList[i].length(), '-');
 		totalSpaces = maxLength - textList[i].length();
+
 		// Calculate left and right padding
-		size_t leftPadding = totalSpaces / 2;
-		size_t rightPadding = totalSpaces - leftPadding;
+		leftPadding = totalSpaces / 2;
+		rightPadding = totalSpaces - leftPadding;
 
 		for (size_t j = 0; j < leftPadding; j++) {
 			spacesLeft = spacesLeft + " ";
@@ -135,25 +98,13 @@ void MenuOutput::printBoxAlignAtCentre(std::string* textList) {
 		for (size_t j = 0; j < rightPadding; j++) {
 			spacesRight = spacesRight + " ";
 		}
-		auto printOptionLine = [&](std::string temp, int numSpacesBeforeOptions) {
-			printAsterisk();
-			int numOfSpacesUntilEndAsterisk = titleLength() - temp.length() - 2 - numSpacesBeforeOptions;
-			if (numOfSpacesUntilEndAsterisk < 0) {
-				numSpacesBeforeOptions = numSpacesBeforeOptions - abs(numOfSpacesUntilEndAsterisk);
-				numOfSpacesUntilEndAsterisk = 0;
-			}
-			printSpacesBeforeOptions(numSpacesBeforeOptions);
-			std::cout << temp;
-			printSpaces(numOfSpacesUntilEndAsterisk);
-			std::cout << "*" << std::endl;
 
-			};
 
 		temp = spacesLeft + "+" + horizontalLine + "+" + spacesRight;
 		printOptionLine(temp, numSpacesBeforeOptions);
 
 
-		temp =  spacesLeft + "|" + textList[i] + "|" + spacesRight;
+		temp = spacesLeft + "|" + textList[i] + "|" + spacesRight;
 		printOptionLine(temp, numSpacesBeforeOptions);
 
 
@@ -165,9 +116,38 @@ void MenuOutput::printBoxAlignAtCentre(std::string* textList) {
 		spacesRight = "";
 	}
 }
+
+// Method to print an option line within the menu box
+void MenuOutput::printOptionLine(std::string temp, int numSpacesBeforeOptions) {
+	// Print asterisk at the beginning of the line
+	printAsterisk();
+
+	// Calculate the number of spaces until the end asterisk
+	int numOfSpacesUntilEndAsterisk = titleLength() - temp.length() - 2 - numSpacesBeforeOptions;
+
+	if (numOfSpacesUntilEndAsterisk < 0) {
+		// Adjust numSpacesBeforeOptions if needed
+		numSpacesBeforeOptions = numSpacesBeforeOptions - abs(numOfSpacesUntilEndAsterisk);
+		numOfSpacesUntilEndAsterisk = 0;
+	}
+
+	// Print spaces before options
+	printSpacesBeforeOptions(numSpacesBeforeOptions);
+
+	// Print the option line
+	std::cout << temp;
+
+	// Print spaces until the end asterisk
+	printSpaces(numOfSpacesUntilEndAsterisk);
+
+	// Print the end asterisk and move to the next line
+	std::cout << "*" << std::endl;
+}
+
+
 size_t MenuOutput::findLongestString(std::string* textList) {
 	size_t maxLength = 0;
-	for (int i = 0; i < size; i++) {
+	for (unsigned int i = 0; i < size; i++) {
 		if (textList[i].length() > maxLength) {
 			maxLength = textList[i].length();
 		}
@@ -175,8 +155,7 @@ size_t MenuOutput::findLongestString(std::string* textList) {
 	return maxLength;
 }
 
-template<typename T>
-T MenuOutput::setZeroIfNegative(T num) {
+unsigned int MenuOutput::setZeroIfNegative(int num) {
 	if (num < 0) {
 		num = 0;
 	}
@@ -184,7 +163,7 @@ T MenuOutput::setZeroIfNegative(T num) {
 }
 
 void MenuOutput::printTitle() {
-	printSpacesBeforeText();
+	printSpaces(numSpaces);
 	preTextAst = setZeroIfNegative(preTextAst);
 	postTextAst = setZeroIfNegative(postTextAst);
 	std::string PreAst(preTextAst, '*');
@@ -199,16 +178,17 @@ int MenuOutput::titleLength() {
 	return title.length() + preTextAst + postTextAst;
 
 }
-void MenuOutput::printAsterisks() {
-	int ast = title.length() + preTextAst + postTextAst;
-	printSpacesBeforeText();
-	for (int i = 0; i < ast; i++) {
+void MenuOutput::printAsterisksAtBottom(int preTextAst, int postTextAst) {
+	unsigned int ast = title.length() + unsigned int (setZeroIfNegative(preTextAst)) + unsigned int (setZeroIfNegative(postTextAst));
+	printSpaces(numSpaces);
+
+	for (unsigned int i = 0; i < ast; i++) {
 		std::cout << "*";
 	}
 	std::cout << std::endl;
 }
 void MenuOutput::printAsterisk() {
-	printSpacesBeforeText();
+	printSpaces(numSpaces);
 	std::cout << "*";
 }
 void MenuOutput::printEmptyAsteriskLine() {
@@ -218,38 +198,26 @@ void MenuOutput::printEmptyAsteriskLine() {
 	std::cout << "*" << std::endl;
 }
 
-void MenuOutput::printSpacesBeforeText() {
-	for (int i = 0; i < numSpaces; i++) {
-		std::cout << " ";
-	}
-}
 void MenuOutput::printSpaces(int spaces) {
 	for (int i = 0; i < spaces; i++) {
 		std::cout << " ";
 	}
 }
-void MenuOutput::printSpacesBeforeOptions() {
-	if (numSpacesBeforeOptions < 0) {
-		numSpacesBeforeOptions = 0;
-	}
-	for (int i = 0; i < numSpacesBeforeOptions; i++) {
+int MenuOutput::printSpacesBeforeOptions(int spaces) {
+	spaces = setZeroIfNegative(spaces);
+	for (int i = 0; i < spaces; i++) {
 		std::cout << " ";
 	}
+	return spaces;
 }
-int MenuOutput::printSpacesBeforeOptions(int numSpaces) {
-	if (numSpaces < 0) {
-		numSpaces = 0;
-	}
-	for (int i = 0; i < numSpaces; i++) {
-		std::cout << " ";
-	}
-	return numSpaces;
-}
-int MenuOutput::getUserInputInteger(int min, int max) {
-	int input; // Variable to store the user input integer
+
+// Functionality to get user input within a range.
+template <typename T>
+T MenuOutput::getUserInputNumInRange(T min, T max) {
+	T input; // Variable to store the user input integer
 	if (min <= max) {
 		do {
-			std::cout << "Select and option ["<<min << " to " << max <<"]: ";
+			std::cout << "Select and option [" << min << " to " << max << "]: ";
 			if (!(std::cin >> input)) {
 				std::cout << "Invalid input! Must be an integer." << std::endl;
 				std::cin.clear();
@@ -268,28 +236,30 @@ int MenuOutput::getUserInputInteger(int min, int max) {
 		exit(1);
 	}
 }
+
+
 void MenuOutput::displayMenu() {
-	
-	int maxAsterisk = 28;
-	postTextAst = 15;
+
+	unsigned int maxAsterisk = 28;
+	postTextAst = 15;        //must be smaller or equal to max Asterisk and be positive number because it is a scalar value.
 	preTextAst = maxAsterisk - postTextAst;
 	numSpaces = 6;
 	numSpacesBeforeOptions = 5;
 	printTitle();
 	printBoxAlignAtCentre(options);
-	printAsterisks();
-	selectOption();
+	printAsterisksAtBottom(preTextAst, postTextAst);
+	handleOptionSelection();
 }
-void MenuOutput::selectOption() {
-	int userOption = getUserInputInteger(1, size);
+void MenuOutput::handleOptionSelection() {
+	unsigned int userOption = getUserInputNumInRange((const unsigned int)1, size);
 	switch (userOption) {
 	case 1:
 		//StartFunction
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		clearScreen();
-		std::cout << "\nStart"<<std::endl;
+		std::cout << "\nStart" << std::endl;
 		break;
-	case 2: 
+	case 2:
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		clearScreen();
 		std::cout << "\nHigh Scores" << std::endl;
@@ -306,12 +276,8 @@ void MenuOutput::selectOption() {
 	default:
 		std::cout << "Invalid input." << std::endl;
 	}
-
-	
-	
-
 }
 
 MenuOutput::~MenuOutput() {
-	delete[] options;
+	delete[] options; // Deallocate memory for options array
 }

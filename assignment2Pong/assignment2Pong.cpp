@@ -1,3 +1,8 @@
+/*
+*AUTHOR Jamie Mason
+Last edit Sunday, March 17th 2024 *
+*/
+
 #include <iostream>
 #include <string>
 #include "MenuOutput.h"
@@ -13,10 +18,10 @@
 
 int main()
 {   
-    MenuOutput m("PONG");
+    MenuOutput m;
     m.displayMenu();
 
 
-    return 0;
+    return 0;  //return the function at 0;
 }
 
