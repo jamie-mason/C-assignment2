@@ -16,10 +16,11 @@ Last edit Sunday, March 17th 2024 7:57pm*
 // Class definition for MenuOutput
 class MenuOutput {
 private:
-	const std::string title = "PONG";       // Title of the menu
+	const std::string* title = new const std::string("PONG");       // Title of the menu
 	std::string* options;                   // Array of menu options
-	const unsigned int size = 3;            // Number of options in the menu (const to prevent modification)
-	unsigned int preTextAst, postTextAst, numBeforeSpacesEachLine, numSpacesBeforeOptions;    // unsigned int holding the number of asterisks that will be printed before and after the title.
+	const unsigned int* size = new unsigned int(3);            // Number of options in the menu (const to prevent modification)
+	unsigned int* preTextAst,* postTextAst,* numBeforeSpacesEachLine;
+	int* numSpacesBeforeOptions;               // unsigned int holding the number of asterisks that will be printed before and after the title.
 	void setOptions();
 public:
 		
@@ -44,9 +45,13 @@ public:
 	void printAsterisk();                          // Print an asterisk
 	void printAsterisksAtBottom(unsigned int, unsigned int);            // Print a line of asterisks  
 	void printEmptyAsteriskLine();                 // Print a line with an asterisk at each end
-	void printSpaces(unsigned int);                         // Print a number of spaces 
+	
+
+	void printSpaces(int);                         // Print a number of spaces 
+	void printSpaces(unsigned int);
+
 	unsigned int printSpacesBeforeOptions(int);             // Print spaces before options and return the total number
-	void printOptionLine(std::string, int);          // Method to print an option line within the menu box.
+	void printOptionLine(std::string&, int&);          // Method to print an option line within the menu box.
 
 
 	// User interaction functions

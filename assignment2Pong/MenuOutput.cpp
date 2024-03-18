@@ -2,15 +2,16 @@
 *AUTHOR Jamie Mason
 Last edit Sunday, March 17th 2024 7:57pm*
 Added try-catch in all functions.
+converted many function variables to pointers
 */
 
 #include "MenuOutput.h"
 MenuOutput::MenuOutput() {
 	try {
-		preTextAst = 0; // Initialize preTextAst to 0
-		postTextAst = 0; // Initialize postTextAst to 0
-		numSpacesBeforeOptions = 0;
-		numBeforeSpacesEachLine = 0;
+		preTextAst = new unsigned int (0); // Initialize preTextAst to 0
+		postTextAst = new unsigned int(0); // Initialize postTextAst to 0
+		numSpacesBeforeOptions = new int (0);  //Initialize numSpacesBeforeOptions to 0
+		numBeforeSpacesEachLine = new unsigned int(0);
 		setOptions();   //calls and runs the setOptions function
 	}
 	catch (...) {
@@ -21,7 +22,7 @@ MenuOutput::MenuOutput() {
 
 void MenuOutput::setOptions() {
 	try {
-		options = new std::string[size]; // Dynamically allocate memory for options array with size 'size'
+		options = new std::string[(*size)]; // Dynamically allocate memory for options array with size 'size'
 		options[0] = "(1) Start"; // Set the first option to "(1) Start"
 		options[1] = "(2) High Scores"; // Set the second option to "(2) High Scores"
 		options[2] = "(3) Quit "; // Set the third option to "(3) Quit "
@@ -51,7 +52,7 @@ std::string* MenuOutput::getOptions() const {
 }
 const std::string MenuOutput::getTitle() const {
 	try {
-		return title;
+		return *title;
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput class title getter function." << std::endl;
@@ -60,7 +61,7 @@ const std::string MenuOutput::getTitle() const {
 }
 const unsigned int MenuOutput::getSize() const {
 	try {
-		return size;
+		return *size;
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput class size getter function." << std::endl;
@@ -70,20 +71,26 @@ const unsigned int MenuOutput::getSize() const {
 
 void MenuOutput::printBoxAlignAtLeft(std::string* textList) {
 	try {
-		std::string temp;
+		std::string* temp = new std::string(""); 
+		std::string* horizontalLine = new std::string("");
+		unsigned int *i = new unsigned int(0);
 
-		for (unsigned int i = 0; i < size; i++) {
-			std::string horizontalLine(textList[i].length(), '-');
+		for (; *i < *size; (*i)++) {
+			horizontalLine = new std::string(textList[*i].length(), '-');
 
-			temp = "+" + horizontalLine + "+";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string ("+" + *horizontalLine + "+");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			temp = "|" + textList[i] + "|";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string ("|" + textList[*i] + "|");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			temp = "+" + horizontalLine + "+";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string("+" + *horizontalLine + "+");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
+
+			delete temp;    //deallocate memory for memory pointed to by the pointer temp.
+			delete horizontalLine;  //deallocate memory for memory pointed to by the pointer horizontalLine.
 		}
+		delete i;  //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput::printBoxAlignAtLeft(std::string*) function" << std::endl;
@@ -92,28 +99,41 @@ void MenuOutput::printBoxAlignAtLeft(std::string* textList) {
 }
 void MenuOutput::printBoxAlignAtRight(std::string* textList) {
 	try {
-		size_t maxLength = findLongestString(textList);
-		std::string leftSpaces, temp;
+		size_t* maxLength = new size_t(findLongestString(textList));
+		size_t* j = new size_t(0);
 
-		for (unsigned int i = 0; i < size; i++) {
-			std::string horizontalLine(textList[i].length(), '-');
-			if (textList[i].length() < maxLength) {
-				for (size_t j = 0; j < maxLength - textList[i].length(); j++) {
-					leftSpaces = leftSpaces + " ";
+		std::string* leftSpaces = new std::string("");
+		std::string* temp = new std::string("");
+		std::string* horizontalLine = new std::string("");
+		unsigned int* i = new unsigned int(0);
+
+		for (; *i < *size; (*i)++) {
+			horizontalLine = new std::string(textList[*i].length(), '-');
+			if (textList[*i].length() < *maxLength) {
+				for (; *j < *maxLength - textList[*i].length(); (*j)++) {
+					leftSpaces = new std::string(*leftSpaces + " ");
 				}
+				delete j;  //deallocate memory for memory pointed to by the pointer j.
+
 			}
 
-			temp = leftSpaces + "+" + horizontalLine + "+";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string(*leftSpaces + "+" + *horizontalLine + "+");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			temp = leftSpaces + "|" + textList[i] + "|";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string(*leftSpaces + "|" + textList[*i] + "|");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			temp = leftSpaces + "+" + horizontalLine + "+";
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string(*leftSpaces + "+" + *horizontalLine + "+");
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			leftSpaces = "";
+
+			delete temp;   //deallocate memory for memory pointed to by the pointer temp.
+			delete horizontalLine;   //deallocate memory for memory pointed to by the pointer horizontalLine.
+			leftSpaces = new std::string("");
 		}
+		delete maxLength;   //deallocate memory for memory pointed to by the pointer maxLength.
+		delete leftSpaces;  //deallocate memory for memory pointed to by the pointer leftSpaces.
+		delete i;  //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput::printBoxAlignAtRight(std::string*) function" << std::endl;
@@ -123,40 +143,62 @@ void MenuOutput::printBoxAlignAtRight(std::string* textList) {
 }
 void MenuOutput::printBoxAlignAtCentre(std::string* textList) {
 	try {
-		size_t maxLength = findLongestString(textList), totalSpaces, leftPadding, rightPadding;
-		std::string spacesLeft, spacesRight, temp;
+		size_t* maxLength = new size_t(findLongestString(textList));
+		size_t* totalSpaces = new size_t(0);
+		size_t* leftPadding = new size_t(0);
+		size_t* rightPadding = new size_t(0);
+		size_t* j = new size_t(0);
 
-		for (unsigned int i = 0; i < size; i++) {
-			std::string horizontalLine(textList[i].length(), '-');
-			totalSpaces = maxLength - textList[i].length();
+		unsigned int* i = new unsigned int(0);
+
+		std::string* spacesLeft = new std::string("");
+		std::string* spacesRight = new std::string("");
+		std::string* temp = new std::string("");
+		std::string* horizontalLine = new std::string("");
+
+		for (; *i < *size; (*i)++) {
+			horizontalLine = new std::string(textList[*i].length(), '-');
+			totalSpaces = new size_t(*maxLength - textList[*i].length());
 
 			// Calculate left and right padding
-			leftPadding = totalSpaces / 2;
-			rightPadding = totalSpaces - leftPadding;
+			leftPadding = new size_t(*totalSpaces / 2);
+			rightPadding = new size_t(*totalSpaces - *leftPadding);
 
-			for (size_t j = 0; j < leftPadding; j++) {
-				spacesLeft = spacesLeft + " ";
+			for (j = new size_t(0); *j < *leftPadding; (*j)++) {
+				spacesLeft = new std::string(*spacesLeft + " ");
 			}
-			for (size_t j = 0; j < rightPadding; j++) {
-				spacesRight = spacesRight + " ";
+			delete j;    //deallocate memory for memory pointed to by the pointer j.
+
+			for (j = new size_t(0); *j < *leftPadding; (*j)++) {
+				spacesRight = new std::string(*spacesRight + " ");
 			}
+			delete j;   //deallocate memory for memory pointed to by the pointer j.
+
+			temp = new std::string(*spacesLeft + "+" + *horizontalLine + "+" + *spacesRight);
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
 
-			temp = spacesLeft + "+" + horizontalLine + "+" + spacesRight;
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string(*spacesLeft + "|" + textList[*i] + "|" + *spacesRight);
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
 
-			temp = spacesLeft + "|" + textList[i] + "|" + spacesRight;
-			printOptionLine(temp, numSpacesBeforeOptions);
+			temp = new std::string(*spacesLeft + "+" + *horizontalLine + "+" + *spacesRight);
+			printOptionLine(*temp, *numSpacesBeforeOptions);
 
 
-			temp = spacesLeft + "+" + horizontalLine + "+" + spacesRight;
-			printOptionLine(temp, numSpacesBeforeOptions);
+			spacesLeft = new std::string("");
+			spacesRight = new std::string("");
 
-
-			spacesLeft = "";
-			spacesRight = "";
+			delete temp;           //deallocate memory for memory pointed to by the pointer temp.
+			delete horizontalLine;   //deallocate memory for memory pointed to by the pointer horizontalLine.
 		}
+		delete maxLength;      //deallocate memory for memory pointed to by the pointer maxLength.
+		delete totalSpaces;    //deallocate memory for memory pointed to by the pointer totalSpaces.
+		delete leftPadding;    //deallocate memory for memory pointed to by the pointer leftPadding.
+		delete rightPadding;   //deallocate memory for memory pointed to by the pointer rightPadding.
+		delete spacesLeft;    //deallocate memory for memory pointed to by the pointer spacesLeft.
+		delete spacesRight;  //deallocate memory for memory pointed to by the pointer spacesRight.
+		delete i;   //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput::printBoxAlignAtCentre(std::string*) function" << std::endl;
@@ -165,19 +207,19 @@ void MenuOutput::printBoxAlignAtCentre(std::string* textList) {
 }
 
 // Method to print an option line within the menu box
-void MenuOutput::printOptionLine(std::string temp, int numSpacesBeforeOptions) {
+void MenuOutput::printOptionLine(std::string& temp, int& numSpacesBeforeOptions) {
 	try {
 		// Print asterisk at the beginning of the line
 		printAsterisk();
 
 		// Calculate the number of spaces until the end asterisk
-		int numOfSpacesUntilEndAsterisk = titleLength() - temp.length() - 2 - numSpacesBeforeOptions;
+		int *numOfSpacesUntilEndAsterisk = new int(titleLength() - temp.length() - 2 - numSpacesBeforeOptions);
 
-		if (numOfSpacesUntilEndAsterisk < 0) {
+		if (*numOfSpacesUntilEndAsterisk < 0) {
 			// Adjust numSpacesBeforeOptions if needed
-			numSpacesBeforeOptions = numSpacesBeforeOptions - abs(numOfSpacesUntilEndAsterisk);
+			numSpacesBeforeOptions = numSpacesBeforeOptions - abs(*numOfSpacesUntilEndAsterisk);
 			numSpacesBeforeOptions = abs(numSpacesBeforeOptions);
-			numOfSpacesUntilEndAsterisk = 0;
+			numOfSpacesUntilEndAsterisk = new int(0);
 		}
 
 		// Print spaces before options
@@ -187,10 +229,11 @@ void MenuOutput::printOptionLine(std::string temp, int numSpacesBeforeOptions) {
 		std::cout << temp;
 
 		// Print spaces until the end asterisk
-		printSpaces(numOfSpacesUntilEndAsterisk);
+		printSpaces(*numOfSpacesUntilEndAsterisk);
 
 		// Print the end asterisk and move to the next line
 		std::cout << "*" << std::endl;
+		delete numOfSpacesUntilEndAsterisk;  //deallocate memory for memory pointed to by the pointer numOfSpacesUntilEndAsterisk.
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput::printOptionLine(std::string, int) function" << std::endl;
@@ -202,7 +245,7 @@ void MenuOutput::printOptionLine(std::string temp, int numSpacesBeforeOptions) {
 size_t MenuOutput::findLongestString(std::string* textList) {
 	try {
 		size_t maxLength = 0;
-		for (unsigned int i = 0; i < size; i++) {
+		for (unsigned int i = 0; i < *size; i++) {
 			if (textList[i].length() > maxLength) {
 				maxLength = textList[i].length();
 			}
@@ -230,14 +273,17 @@ unsigned int MenuOutput::setZeroIfNegative(int num) {
 
 void MenuOutput::printTitle() {
 	try {
-		printSpaces(numBeforeSpacesEachLine);
-		preTextAst = setZeroIfNegative(preTextAst);
-		postTextAst = setZeroIfNegative(postTextAst);
-		std::string PreAst(preTextAst, '*');
-		std::string PostAst(postTextAst, '*');
+		printSpaces(*numBeforeSpacesEachLine);
+		preTextAst = new unsigned int(setZeroIfNegative(*preTextAst));
+		postTextAst = new unsigned int(setZeroIfNegative(*postTextAst));
+		std::string* preAst = new std::string(*preTextAst, '*');
+		std::string* postAst = new std::string(*postTextAst, '*');
 
 
-		std::cout << PreAst << title << PostAst << std::endl;
+		std::cout << *preAst << *title << *postAst << std::endl;
+
+		delete preAst;   //deallocate memory for memory pointed to by the pointer preAst.
+		delete postAst;  //deallocate memory for memory pointed to by the pointer postAst.
 	}
 	catch (...) {
 		std::cout << "ERROR in MenuOutput::printTitle() function" << std::endl;
@@ -246,7 +292,7 @@ void MenuOutput::printTitle() {
 }
 unsigned int MenuOutput::titleLength() {
 	try {
-		return title.length() + preTextAst + postTextAst;
+		return (*title).length() + *preTextAst + *postTextAst;
 	}
 	catch (...) {
 		std::cout << "ERROR in MenuOutput::titleLength() function" << std::endl;
@@ -256,12 +302,16 @@ unsigned int MenuOutput::titleLength() {
 }
 void MenuOutput::printAsterisksAtBottom(unsigned int preTextAst, unsigned int postTextAst) {
 	try {
-		unsigned int ast = titleLength();
-		printSpaces(numBeforeSpacesEachLine);
+		unsigned int* ast = new unsigned int (titleLength());
+		unsigned int* i = new unsigned int(0);
+		printSpaces(*numBeforeSpacesEachLine);
 
-		for (unsigned int i = 0; i < ast; i++) {
+		for (i = new unsigned int(0); *i < *ast; (*i)++) {
 			std::cout << "*";
 		}
+		delete ast;  //deallocate memory for memory pointed to by the pointer ast.
+		delete i;    //deallocate memory for memory pointed to by the pointer i.
+
 		std::cout << std::endl;
 	}
 	catch (...) {
@@ -271,7 +321,7 @@ void MenuOutput::printAsterisksAtBottom(unsigned int preTextAst, unsigned int po
 }
 void MenuOutput::printAsterisk() {
 	try {
-		printSpaces(numBeforeSpacesEachLine);
+		printSpaces(*numBeforeSpacesEachLine);
 		std::cout << "*";
 	}
 	catch (...) {
@@ -282,11 +332,12 @@ void MenuOutput::printAsterisk() {
 void MenuOutput::printEmptyAsteriskLine() {
 	try {
 		printAsterisk();
-		unsigned int numOfSpacesUntilEndAsterisk;
-		if (!(numOfSpacesUntilEndAsterisk = titleLength() - 2)) {
-			numOfSpacesUntilEndAsterisk = 0;
+		unsigned int *numOfSpacesUntilEndAsterisk = new unsigned int(0);
+		if (!(*numOfSpacesUntilEndAsterisk = titleLength() - 2)) {
+			numOfSpacesUntilEndAsterisk = new unsigned int(0);
 		}
-		printSpaces(numOfSpacesUntilEndAsterisk);
+		printSpaces(*numOfSpacesUntilEndAsterisk);
+		delete numOfSpacesUntilEndAsterisk;  //deallocate memory for memory pointed to by the pointer numOfSpacesUntilEndAsterisk.
 		std::cout << "*" << std::endl;
 	}
 	catch (const std::invalid_argument& e) {
@@ -301,11 +352,36 @@ void MenuOutput::printEmptyAsteriskLine() {
 	}
 }
 
-void MenuOutput::printSpaces(unsigned int spaces) {
+
+void MenuOutput::printSpaces(int spaces) {
 	try {
-		for (unsigned int i = 0; i < spaces; i++) {
+		int* i = new int(0);
+
+		for (; *i < spaces; (*i)++) {
 			std::cout << " ";
 		}
+		delete i;  //deallocate memory for memory pointed to by the pointer i.
+	}
+	catch (const std::invalid_argument& e) {
+		std::cerr << e.what() << std::endl;
+		std::cout << "Negative value was passed as unsigned int in MenuOutput::printSpaces(unsigned int) function" << std::endl;
+
+		exit(1);
+	}
+	catch (...) {
+		std::cout << "ERROR in MenuOutput::printSpaces(unsigned int) function" << std::endl;
+		exit(1);
+	}
+}
+
+void MenuOutput::printSpaces(unsigned int spaces) {
+	try {
+		unsigned int* i = new unsigned int(0);
+
+		for (; *i < spaces; (*i)++) {
+			std::cout << " ";
+		}
+		delete i; //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (const std::invalid_argument& e) {
 		std::cerr << e.what() << std::endl;
@@ -323,9 +399,11 @@ unsigned int MenuOutput::printSpacesBeforeOptions(int spaces) {
 	try {
 		spaces = setZeroIfNegative(spaces);
 		unsigned int uSpaces = spaces;
-		for (unsigned int i = 0; i < uSpaces; i++) {
+		unsigned int* i = new unsigned int(0);
+		for (; *i < uSpaces; (*i)++) {
 			std::cout << " ";
 		}
+		delete i; //deallocate memory for memory pointed to by the pointer i.
 		return uSpaces;
 	}
 	catch (const std::invalid_argument& e) {
@@ -375,17 +453,22 @@ T MenuOutput::getUserInputNumInRange(T min, T max) {
 void MenuOutput::displayMenu() {
 
 	try {
-		const unsigned int maxAsterisk = 28;
-		postTextAst = 15;
-		if (maxAsterisk < postTextAst) {
-			postTextAst = maxAsterisk;
+		int* temp = nullptr; 
+		const unsigned int* maxAsterisk = new const unsigned int (28);
+		postTextAst = new unsigned int(15);
+		if (*maxAsterisk < *postTextAst) {
+			postTextAst = new unsigned int(*maxAsterisk);
 		}
-		preTextAst = maxAsterisk - postTextAst;
-		numBeforeSpacesEachLine = 6;
-		numSpacesBeforeOptions = 5;
+		preTextAst = new unsigned int(*maxAsterisk - *postTextAst);
+
+		numBeforeSpacesEachLine = new unsigned int(6);
+
+		numSpacesBeforeOptions = new int(5);
+
+		delete temp;  //deallocate memory for memory pointed to by the pointer temp.
 		printTitle();
 		printBoxAlignAtCentre(options);
-		printAsterisksAtBottom(preTextAst, postTextAst);
+		printAsterisksAtBottom(*preTextAst, *postTextAst);
 		handleOptionSelection();
 	}
 	catch (const std::invalid_argument& e) {
@@ -402,8 +485,8 @@ void MenuOutput::displayMenu() {
 }
 void MenuOutput::handleOptionSelection() {
 	try {
-		unsigned int userOption = getUserInputNumInRange((const unsigned int)1, size);
-		switch (userOption) {
+		unsigned int *userOption = new unsigned int(getUserInputNumInRange((const unsigned int)1, *size));
+		switch (*userOption) {
 		case 1:
 			//StartFunction
 			std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -427,6 +510,7 @@ void MenuOutput::handleOptionSelection() {
 		default:
 			std::cout << "Invalid input." << std::endl;
 		}
+		delete userOption; //deallocate memory for memory pointed to by the pointer userOption.
 	}
 	catch (const std::invalid_argument& e) {
 		std::cerr << e.what() << std::endl;
@@ -445,6 +529,13 @@ void MenuOutput::handleOptionSelection() {
 MenuOutput::~MenuOutput() {
 	try {
 		delete[] options; // Deallocate memory for options array
+		delete numSpacesBeforeOptions;  // Deallocate memory pointed to by the pointer numSpacesBeforeOptions
+		delete preTextAst;      //Deallocate memory pointed to by the pointer preTextAst
+		delete postTextAst;     // Deallocate memory pointed to by the pointer postTextAst
+		delete numBeforeSpacesEachLine; // Deallocate memory pointed to by the pointer numBeforeSpacesEachLine
+		delete title; // Deallocate memory pointed to by the pointer title
+		delete size; // Deallocate memory pointed to by the pointer size
+
 	}
 	catch (...) {
 		std::cout << "Error in MenuOutput class destructor function." << std::endl;
