@@ -1,8 +1,7 @@
 /*
 *AUTHOR Jamie Mason
-Last edit Sunday, March 17th 2024 7:57pm*
+Last edit Sunday, March 17th 2024 1:23Am*
 */
-
 #pragma once    // Include guard to prevent multiple inclusion of this header file
 
 // Standard library includes
@@ -12,18 +11,30 @@ Last edit Sunday, March 17th 2024 7:57pm*
 #include <cstdlib>  // For standard library functions
 #include <chrono>   // For timing functions
 #include <thread>   // For thread-related functions
+#include "MainLoop.h"
+#include "HighScoreManager.h"
+
+
+class MainLoop;
+class HighScoreManager;
 
 // Class definition for MenuOutput
 class MenuOutput {
 private:
-	const std::string* title = new const std::string("PONG");       // Title of the menu
+	const std::string* title = new const std::string("PONG");       //Title of the menu
 	std::string* options;                   // Array of menu options
 	const unsigned int* size = new unsigned int(3);            // Number of options in the menu (const to prevent modification)
-	unsigned int* preTextAst,* postTextAst,* numBeforeSpacesEachLine;
+	unsigned int preTextAst;
+	unsigned int postTextAst;
+	unsigned int numBeforeSpacesEachLine;
 	int* numSpacesBeforeOptions;               // unsigned int holding the number of asterisks that will be printed before and after the title.
 	void setOptions();
+	HighScoreManager* hs;
+
+
 public:
-		
+	
+
 	// Constructors
 	MenuOutput();                     // Default constructor
 	
@@ -31,6 +42,7 @@ public:
 	const std::string getTitle() const; 
 	const unsigned int getSize() const;         // Get the size of the menu
 
+	unsigned int getNumSpacesBeforeEachLine() const;
 	// Utility functions
 	void clearScreen();          // Clear the console screen
 	size_t findLongestString(std::string*);    // Find the length of the longest string in an array
@@ -56,11 +68,17 @@ public:
 
 	// User interaction functions
 	template <typename T>
-	T getUserInputNumInRange(T, T);            // Get integer input from user within a range
+	T getUserInputNumInRange(T, T); 
+
+	template <typename U>
+	U getUserInputNumInRange(std::string,U, U);            // Get integer input from user within a range
+
+	int getUserInputNum(std::string);            // Get integer input from user within a range
 
 	void handleOptionSelection();                          // Handle user selection
 	void displayMenu();                           // Display the menu
-
+	void accessResetDeleteHS();
+	HighScoreManager getHighScoreManager();
 	// Destructor
 	~MenuOutput();                                  // Destructor to clean up memory
 

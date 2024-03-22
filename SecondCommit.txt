@@ -1,0 +1,45 @@
+Author Jamie Mason 100819142.
+last updated March 22nd 2024 1:30 AM.
+
+Functionality summary of all the code files in project:
+
+1. Paddle.h/Paddle.cpp:
+   - Represents a paddle in a Pong game.
+   - Contains constructors for player-controlled and CPU-controlled paddles.
+   - Provides methods to move the paddle up, down, or automatically based on the ball's position.
+   - Handles user input for controlling the paddle.
+
+2. Ball.h/Ball.cpp:
+   - Represents a ball in a Pong game.
+   - Contains a constructor to initialize the ball's position.
+   - Provides methods to move the ball, handle collisions with walls and paddles, and reset its position.
+
+3. HighScoreManager.h/HighScoreManager.cpp:
+   - Manages high scores for the game.
+   - Stores high scores in a vector of pairs (player name, score).
+   - Provides functionality to add new high scores, load/save high scores from/to a file, print high scores, delete high scores, and reset high scores.
+
+4. MainLoop.h/MainLoop.cpp:
+   - Controls the main game loop and user interface.
+   - Manages the game board dimensions.
+   - Provides functions to clear the screen, play the game, display the game grid, and print messages.
+   - Handles countdown before the game starts.
+
+5. MenuOutput.h/MenuOutput.cpp:
+   - Manages the game menu and user interface.
+   - Handles menu options, title, and printing.
+   - Provides functionality to display the menu, get user input, and interact with high scores.
+
+Overall, these files constitute the core functionality of a Pong game, including paddle and ball movement, high score management, game loop control, and user interface management.
+
+Logical implementation summary:
+
+The logical implementation of the provided code comprises several modular components that collectively form a classic Pong game. The core elements include paddles, a ball, game logic, high score management, and user interface handling. 
+
+The Paddle class defines the behavior of both player-controlled and CPU-controlled paddles, facilitating movement up and down the game board. Meanwhile, the Ball class governs the movement and collision detection of the ball, ensuring dynamic gameplay. 
+
+High score management is handled by the HighScoreManager class, which allows for the addition, deletion, and display of high scores. Additionally, the MainLoop class orchestrates the game's main loop, managing screen clearing, game initialization, and grid rendering.
+
+Finally, the MenuOutput class provides an interactive menu system for user interaction, facilitating options selection and high score access. 
+
+By compartmentalizing functionality into these modular components, the code achieves a well-organized and extensible design, facilitating easy maintenance and further development of the Pong game.

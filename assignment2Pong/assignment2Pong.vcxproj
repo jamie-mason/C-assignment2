@@ -128,12 +128,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="assignment2Pong.cpp" />
+    <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="HighScoreManager.cpp" />
     <ClCompile Include="MainLoop.cpp" />
     <ClCompile Include="MenuOutput.cpp" />
+    <ClCompile Include="Paddle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ball.h" />
+    <ClInclude Include="HighScoreManager.h" />
     <ClInclude Include="MainLoop.h" />
     <ClInclude Include="MenuOutput.h" />
+    <ClInclude Include="Paddle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="HighScores.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,17 +1,18 @@
 /*
 *AUTHOR Jamie Mason
 Last edit Sunday, March 17th 2024 7:57pm*
-Added try-catch in all functions.
-converted many function variables to pointers
 */
 
 #include "MenuOutput.h"
 MenuOutput::MenuOutput() {
 	try {
-		preTextAst = new unsigned int (0); // Initialize preTextAst to 0
-		postTextAst = new unsigned int(0); // Initialize postTextAst to 0
-		numSpacesBeforeOptions = new int (0);  //Initialize numSpacesBeforeOptions to 0
-		numBeforeSpacesEachLine = new unsigned int(0);
+		preTextAst = 0; // Initialize preTextAst to 0
+		postTextAst = 0; // Initialize postTextAst to 0
+		numBeforeSpacesEachLine = 6;
+		numSpacesBeforeOptions = new int(5);
+
+		hs = new HighScoreManager("HighScores.txt");
+
 		setOptions();   //calls and runs the setOptions function
 	}
 	catch (...) {
@@ -68,20 +69,29 @@ const unsigned int MenuOutput::getSize() const {
 		exit(1);
 	}
 }
+unsigned int MenuOutput::getNumSpacesBeforeEachLine() const {
+	try {
+		return numBeforeSpacesEachLine;
+	}
+	catch (...) {
+		std::cout << "ERROR IN getNumSpacesBeforeEachLine()." << std::endl;
+		exit(1);
+	}
+}
 
 void MenuOutput::printBoxAlignAtLeft(std::string* textList) {
 	try {
-		std::string* temp = new std::string(""); 
+		std::string* temp = new std::string("");
 		std::string* horizontalLine = new std::string("");
-		unsigned int *i = new unsigned int(0);
+		unsigned int* i = new unsigned int(0);
 
 		for (; *i < *size; (*i)++) {
 			horizontalLine = new std::string(textList[*i].length(), '-');
 
-			temp = new std::string ("+" + *horizontalLine + "+");
+			temp = new std::string("+" + *horizontalLine + "+");
 			printOptionLine(*temp, *numSpacesBeforeOptions);
 
-			temp = new std::string ("|" + textList[*i] + "|");
+			temp = new std::string("|" + textList[*i] + "|");
 			printOptionLine(*temp, *numSpacesBeforeOptions);
 
 			temp = new std::string("+" + *horizontalLine + "+");
@@ -213,7 +223,7 @@ void MenuOutput::printOptionLine(std::string& temp, int& numSpacesBeforeOptions)
 		printAsterisk();
 
 		// Calculate the number of spaces until the end asterisk
-		int *numOfSpacesUntilEndAsterisk = new int(titleLength() - temp.length() - 2 - numSpacesBeforeOptions);
+		int* numOfSpacesUntilEndAsterisk = new int(titleLength() - temp.length() - 2 - numSpacesBeforeOptions);
 
 		if (*numOfSpacesUntilEndAsterisk < 0) {
 			// Adjust numSpacesBeforeOptions if needed
@@ -273,17 +283,15 @@ unsigned int MenuOutput::setZeroIfNegative(int num) {
 
 void MenuOutput::printTitle() {
 	try {
-		printSpaces(*numBeforeSpacesEachLine);
-		preTextAst = new unsigned int(setZeroIfNegative(*preTextAst));
-		postTextAst = new unsigned int(setZeroIfNegative(*postTextAst));
-		std::string* preAst = new std::string(*preTextAst, '*');
-		std::string* postAst = new std::string(*postTextAst, '*');
+		printSpaces(numBeforeSpacesEachLine);
+		preTextAst = setZeroIfNegative(preTextAst);
+		postTextAst = setZeroIfNegative(postTextAst);
+		std::string preAst(preTextAst, '*');
+		std::string postAst(postTextAst, '*');
 
 
-		std::cout << *preAst << *title << *postAst << std::endl;
+		std::cout << preAst << *title << postAst << std::endl;
 
-		delete preAst;   //deallocate memory for memory pointed to by the pointer preAst.
-		delete postAst;  //deallocate memory for memory pointed to by the pointer postAst.
 	}
 	catch (...) {
 		std::cout << "ERROR in MenuOutput::printTitle() function" << std::endl;
@@ -292,7 +300,7 @@ void MenuOutput::printTitle() {
 }
 unsigned int MenuOutput::titleLength() {
 	try {
-		return (*title).length() + *preTextAst + *postTextAst;
+		return (*title).length() + preTextAst + postTextAst;
 	}
 	catch (...) {
 		std::cout << "ERROR in MenuOutput::titleLength() function" << std::endl;
@@ -302,15 +310,13 @@ unsigned int MenuOutput::titleLength() {
 }
 void MenuOutput::printAsterisksAtBottom(unsigned int preTextAst, unsigned int postTextAst) {
 	try {
-		unsigned int* ast = new unsigned int (titleLength());
-		unsigned int* i = new unsigned int(0);
-		printSpaces(*numBeforeSpacesEachLine);
+		unsigned int ast = titleLength();
 
-		for (i = new unsigned int(0); *i < *ast; (*i)++) {
+		printSpaces(numBeforeSpacesEachLine);
+
+		for (unsigned int i = 0; i < ast; i++) {
 			std::cout << "*";
 		}
-		delete ast;  //deallocate memory for memory pointed to by the pointer ast.
-		delete i;    //deallocate memory for memory pointed to by the pointer i.
 
 		std::cout << std::endl;
 	}
@@ -321,7 +327,7 @@ void MenuOutput::printAsterisksAtBottom(unsigned int preTextAst, unsigned int po
 }
 void MenuOutput::printAsterisk() {
 	try {
-		printSpaces(*numBeforeSpacesEachLine);
+		printSpaces(numBeforeSpacesEachLine);
 		std::cout << "*";
 	}
 	catch (...) {
@@ -332,7 +338,7 @@ void MenuOutput::printAsterisk() {
 void MenuOutput::printEmptyAsteriskLine() {
 	try {
 		printAsterisk();
-		unsigned int *numOfSpacesUntilEndAsterisk = new unsigned int(0);
+		unsigned int* numOfSpacesUntilEndAsterisk = new unsigned int(0);
 		if (!(*numOfSpacesUntilEndAsterisk = titleLength() - 2)) {
 			numOfSpacesUntilEndAsterisk = new unsigned int(0);
 		}
@@ -355,12 +361,9 @@ void MenuOutput::printEmptyAsteriskLine() {
 
 void MenuOutput::printSpaces(int spaces) {
 	try {
-		int* i = new int(0);
-
-		for (; *i < spaces; (*i)++) {
+		for (unsigned int i = 0; i < spaces; i++) {
 			std::cout << " ";
 		}
-		delete i;  //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (const std::invalid_argument& e) {
 		std::cerr << e.what() << std::endl;
@@ -376,12 +379,10 @@ void MenuOutput::printSpaces(int spaces) {
 
 void MenuOutput::printSpaces(unsigned int spaces) {
 	try {
-		unsigned int* i = new unsigned int(0);
 
-		for (; *i < spaces; (*i)++) {
+		for (unsigned int i = 0; i < spaces; i++) {
 			std::cout << " ";
 		}
-		delete i; //deallocate memory for memory pointed to by the pointer i.
 	}
 	catch (const std::invalid_argument& e) {
 		std::cerr << e.what() << std::endl;
@@ -399,11 +400,9 @@ unsigned int MenuOutput::printSpacesBeforeOptions(int spaces) {
 	try {
 		spaces = setZeroIfNegative(spaces);
 		unsigned int uSpaces = spaces;
-		unsigned int* i = new unsigned int(0);
-		for (; *i < uSpaces; (*i)++) {
+		for (unsigned int i = 0; i < uSpaces; i++) {
 			std::cout << " ";
 		}
-		delete i; //deallocate memory for memory pointed to by the pointer i.
 		return uSpaces;
 	}
 	catch (const std::invalid_argument& e) {
@@ -424,22 +423,21 @@ T MenuOutput::getUserInputNumInRange(T min, T max) {
 	try {
 		if (min <= max) {
 			do {
-				std::cout << "Select and option [" << min << " to " << max << "]: ";
+				std::cout << "Select an option [" << min << " to " << max << "]: ";
 				if (!(std::cin >> input)) {
-					std::cout << "Invalid input! Must be an integer." << std::endl;
+					std::cout << "Invalid input! Must be an integer.\n" << std::endl;
 					std::cin.clear();
 					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-					continue;
 				}
 				else if (input < min || input > max) {
-					std::cout << "Invalid input! Integer must be in the range [" << min << ", " << max << "]." << std::endl;
+					std::cout << "Invalid input! Integer must be in the range [" << min << ", " << max << "].]n" << std::endl;
 				}
 			} while (input < min || input > max);
 
 			return input;
 		}
 		else {
-			std::cout << "ERROR min value is greater than max value.";
+			std::cout << "ERROR min value is greater than max value."<<std::endl;
 			exit(1);
 		}
 	}
@@ -449,26 +447,75 @@ T MenuOutput::getUserInputNumInRange(T min, T max) {
 	}
 }
 
+template <typename U>
+U MenuOutput::getUserInputNumInRange(std::string output, U min, U max) {
+	U input; // Variable to store the user input integer
+	try {
+		if (min <= max) {
+			do {
+				std::cout << output;
+				if (!(std::cin >> input)) {
+					std::cout << "Invalid input! Must be an integer.\n" << std::endl;
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				}
+				else if (input < min || input > max) {
+					return -1;
+				}
+			} while (input < min || input > max);
+
+			return input;
+		}
+		else {
+			std::cout << "ERROR min value is greater than max value."<<std::endl;
+			exit(1);
+		}
+	}
+	catch (...) {
+		std::cout << "ERROR in function MenuOutput::getUserInputNumInRange()" << std::endl;
+		exit(1);
+	}
+}
+
+int MenuOutput::getUserInputNum(std::string output) {
+	try {
+		int input; // Variable to store the user input integer
+		while (true) {
+			std::cout << output;
+			if (!(std::cin >> input)) {
+				std::cout << "Invalid input! Must be an integer." << std::endl;
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
+			else {
+				return input;
+			}
+		}
+	}
+	catch (...) {
+		std::cout << "ERROR in function MenuOutput::getUserInputNumInRange()" << std::endl;
+		exit(1);
+	}
+
+
+}
+
 
 void MenuOutput::displayMenu() {
 
 	try {
-		int* temp = nullptr; 
-		const unsigned int* maxAsterisk = new const unsigned int (28);
-		postTextAst = new unsigned int(15);
-		if (*maxAsterisk < *postTextAst) {
-			postTextAst = new unsigned int(*maxAsterisk);
+		const unsigned int maxAsterisk = 28;
+		postTextAst = 15;
+		if (maxAsterisk < postTextAst) {
+			postTextAst = maxAsterisk;
 		}
-		preTextAst = new unsigned int(*maxAsterisk - *postTextAst);
+		preTextAst = maxAsterisk - postTextAst;
 
-		numBeforeSpacesEachLine = new unsigned int(6);
 
-		numSpacesBeforeOptions = new int(5);
 
-		delete temp;  //deallocate memory for memory pointed to by the pointer temp.
 		printTitle();
 		printBoxAlignAtCentre(options);
-		printAsterisksAtBottom(*preTextAst, *postTextAst);
+		printAsterisksAtBottom(preTextAst, postTextAst);
 		handleOptionSelection();
 	}
 	catch (const std::invalid_argument& e) {
@@ -485,32 +532,32 @@ void MenuOutput::displayMenu() {
 }
 void MenuOutput::handleOptionSelection() {
 	try {
-		unsigned int *userOption = new unsigned int(getUserInputNumInRange((const unsigned int)1, *size));
-		switch (*userOption) {
-		case 1:
-			//StartFunction
+		MainLoop p;
+		unsigned int userOption = getUserInputNumInRange((const unsigned int)1, *size);
+		if (userOption == 1) {
+			// StartFunction
+			std::cout << "\nSTARTING GAME.....\n";
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			clearScreen();
-			std::cout << "\nStart" << std::endl;
-			break;
-		case 2:
+			p.play();
+		}
+		else if (userOption == 2) {
+			std::cout << "\nACCESSING HIGH SCORES.....\n";
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			clearScreen();
-			std::cout << "\nHigh Scores" << std::endl;
-
-			break;
-		case 3:
-			//Quit function
-			std::cout << "\nQUITTING GAME.....";
+			accessResetDeleteHS();
+		}
+		else if (userOption == 3) {
+			// Quit function
+			std::cout << "\nQUITTING GAME.....\n";
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 			clearScreen();
 			std::cout << "Game has Quitted" << std::endl;
 			exit(1);
-			break;
-		default:
+		}
+		else {
 			std::cout << "Invalid input." << std::endl;
 		}
-		delete userOption; //deallocate memory for memory pointed to by the pointer userOption.
 	}
 	catch (const std::invalid_argument& e) {
 		std::cerr << e.what() << std::endl;
@@ -525,16 +572,78 @@ void MenuOutput::handleOptionSelection() {
 
 	}
 }
+HighScoreManager MenuOutput::getHighScoreManager() {
+	return *hs;
+}
+void MenuOutput::accessResetDeleteHS() {
+	try {
+		hs->printHighScores();
+		int selected;
+		std::string spaces(numBeforeSpacesEachLine, ' ');
+		std::string output;
+		std::cout << std::endl;
+		unsigned int userOption;
+		if (hs->getHighScores().size() > 0) {
+			output = spaces + "Options: [Go back (1 or any other number)|Delete scores (2)|Reset all scores (3)]: ";
+			userOption = getUserInputNumInRange(output, (const unsigned int)1, (const unsigned int)3);
 
+			if (userOption == 2) {
+				//delete
+				selected = getUserInputNum("\n" + spaces + "Which index would you like to delete? [enter any other number to go back]: ");
+				if (selected > 1 && selected <= hs->getHighScores().size()) {
+					hs->deleteHighScore(selected - 1);
+				}
+				clearScreen();
+				accessResetDeleteHS();
+
+			}
+
+			else if (userOption == 3) {
+				//reset function
+				char ans;
+				std::cout << "Are you sure you want to reset your stats? [y/n]: ";
+				if (std::cin >> ans) {
+					if (ans == 'y' || ans == 'Y') {
+						hs->resetHighScores();
+
+					}
+					clearScreen();
+					accessResetDeleteHS();
+				}
+			}
+			else {
+				//Back 
+				std::cout << "\nMAIN MENU.....\n";
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+				clearScreen();
+				displayMenu();
+			}
+		}
+		else
+		{
+			std::string input;
+			std::cout << spaces + "Options: [Go back (any key)]: ";
+			std::cin >> input;
+			std::cout << "\nMAIN MENU.....\n";
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			clearScreen();
+			displayMenu();
+		}
+		
+
+	}
+	catch (...) {
+		std::cout << "ERROR in accessResetDeleteHS() function." << std::endl;
+		exit(1);
+	}
+}
 MenuOutput::~MenuOutput() {
 	try {
 		delete[] options; // Deallocate memory for options array
 		delete numSpacesBeforeOptions;  // Deallocate memory pointed to by the pointer numSpacesBeforeOptions
-		delete preTextAst;      //Deallocate memory pointed to by the pointer preTextAst
-		delete postTextAst;     // Deallocate memory pointed to by the pointer postTextAst
-		delete numBeforeSpacesEachLine; // Deallocate memory pointed to by the pointer numBeforeSpacesEachLine
 		delete title; // Deallocate memory pointed to by the pointer title
 		delete size; // Deallocate memory pointed to by the pointer size
+		delete hs;
 
 	}
 	catch (...) {
